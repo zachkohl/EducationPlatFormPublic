@@ -1,0 +1,184 @@
+/*
+ * Globals
+ */
+
+/* Links */
+/* a,
+a:focus,
+a:hover {
+  color: #fff;
+} */
+
+
+html,
+body {
+  height: 100%;
+   /* background-color: #333;  */
+}
+
+body {
+  display: -ms-flexbox; /* https://stackoverflow.com/questions/18019450/css-flexbox-not-working-in-ie10 use ms-flexbox for backward compatibility*/
+  display: flex;
+  flex-direction: column;
+
+
+/*  box-shadow: inset 0rem 0rem 5rem rgba(0, 0, 0, .5); /*https://developer.mozilla.org/en-US/docs/Web/CSS/box-shadow */
+}
+
+.cover-container {
+  max-width: 42em; /*em is the calculated font size of the emelement. https://developer.mozilla.org/en-US/docs/Web/CSS/length#em */
+  position: relative;
+  display: flex;
+}
+
+.container{
+  background-color:white;
+  border-top-right-radius: 1.5em;
+  border-top-left-radius: 1.5em;
+  
+}
+.login{
+  max-width: 20em;
+  margin-left: auto;
+  margin-right: auto;
+  
+}
+
+
+
+.inputlogin{
+  margin-left: auto;
+
+  
+}
+
+  @media (min-width:500px){ /*detects desktop https://developer.mozilla.org/en-US/docs/Web/CSS/@media*/
+  .inputlogin{
+    margin-left: 1em;
+
+  } 
+} 
+
+#logoutButton{
+  margin-left:auto;
+  margin-right:1em;
+
+}
+/* for editor */
+.modal-body{
+  text-align: left;
+}
+
+.questionTitle{
+  margin:auto;
+  text-align:left;
+  
+}
+
+/* .questionTitle:hover{
+  color:blue;
+} */
+
+#newQuestionDiv{
+  padding:1em;
+}
+
+.questionList:hover{
+  color:blue;
+}
+
+#logoutButton{
+  color:black;
+}
+
+/* FLEX layout for quiz */
+#questionBody{
+  margin-top:1em;
+  margin-bottom:3em;
+}
+
+.answerRow{
+  margin-bottom:.5em;
+
+}
+.answerRowSub{
+  display:inline-block;
+  text-align:left;
+  width:500px;
+}
+
+#textArea{
+  width:100%;
+}
+
+#submitButton{
+  margin:1em;
+}
+
+#updateNumberOfAnswers{
+  margin:1em;
+}
+
+.itemTitle{
+  margin:auto;
+  text-align:left;
+}
+.itemTitle:hover{
+  color:black;
+}
+
+.truncate{
+  float:right;
+}
+.stargarnetReferral{
+font-size:.7em;
+padding:1em;
+background-color:white;
+}
+
+#imageholder{
+  height: 25%;
+  width: 25%;
+  margin:0;
+  float:left;
+}
+#iframeContainer{
+width:400px;
+}
+
+
+#maintext{
+  text-align:left;
+}
+
+#textInputPart{
+  max-width: 20em;
+  margin-left: 2em;
+  margin-right: auto;
+}
+
+#questionBody{
+ text-align:left;
+
+}
+
+#backwardAndForward{
+  background-color: white;
+max-width: 100%;
+
+}
+
+
+#questionPart{ /* for mobile*/
+  word-wrap: break-word;
+  max-width: 10em;
+  text-align: left;
+}
+
+@media (min-width:500px){ /*detects desktop https://developer.mozilla.org/en-US/docs/Web/CSS/@media*/
+  #questionPart{
+    word-wrap: break-word;
+    max-width: 34em;
+    text-align: left;
+  }
+} 

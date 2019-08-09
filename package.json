@@ -1,0 +1,39 @@
+{
+  "name": "teen-aid",
+  "version": "1.0.0",
+  "description": "Sexual education survey framework as commissioned by Teen-Aid",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zachkohl/teen-aid.git"
+  },
+  "author": "Zach Kohl",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zachkohl/teen-aid/issues"
+  },
+  "homepage": "https://github.com/zachkohl/teen-aid#readme",
+  "dependencies": {
+    "@pusher/chatkit-server": "^1.1.0",
+    "@sendgrid/mail": "^6.3.1",
+    "bcrypt": "^3.0.6",
+    "body-parser": "^1.18.3",
+    "connect-flash": "^0.1.1",
+    "connect-pg-simple": "^5.0.0",
+    "cookie-parser": "^1.4.4",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "express-fileupload": "^1.1.4",
+    "express-handlebars": "^3.0.2",
+    "express-session": "^1.16.1",
+    "helmet": "^3.16.0",
+    "pg": "^7.9.0",
+    "socket.io": "^2.2.0"
+  },
+  "engines": {
+    "node": "8.11.4"
+  }
+}

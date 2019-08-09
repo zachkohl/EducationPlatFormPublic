@@ -1,0 +1,480 @@
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <h1 class="masthead-brand">Question Editor</h1>
+        </div>
+    </header>
+    {{#if message}}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {{/if}}
+    <main role="main" class="inner cover">
+
+        <!-- Button trigger modal -->
+        <div id="newQuestionDiv">
+            {{!--
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal"> --}}
+                <button type="button" class="btn btn-primary" id="createNewQuestion">
+                    create new question
+                </button>
+        </div>
+
+        <ul class="list-group" id="questionlist">
+            {{#each rows}}
+            <li class="list-group-item questionList" id="questionId{{{questions_id}}}">
+                <p class="questionTitle">{{questions_title}}</p>
+            </li>
+            {{/each}}
+        </ul>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">New Question</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-group" id="mainForm">
+                            <div class="form-row">
+                                <div class="form-group col-md-2">
+                                    <label for="questionOrder">Order#</label>
+                                    <input type="text" class="form-control" id="questionOrder" value="" name="questionOrder">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="questionName" id="title">Question Title</label>
+                                    <input type="text" class="form-control" id="questionName" name="questionTitle">
+                                </div>
+                            </div>
+                            <hr>
+                            <p>
+                                <strong>Catagories</strong>
+                            </p>
+                            <div id="catagoryListDiv">
+                            </div>
+                            <hr>
+
+
+                            <label for="questionBody">Question Body</label>
+                            <textarea class="form-control" id="questionBody" name="questionBody" rows="10"></textarea>
+
+                            <div id="typeOfQuestion">
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" id="essayType" value="essay" name="type">
+                                    <label class="form-check-label" for="essayType">Essay Type Question</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" id="multiplechoicetype" value="mchoice" name="type" checked="checked">
+                                    <label class="form-check-label" for="multiplechoicetype">Multiple Choice Type Question</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" id="announcementRadio" value="announcement" name="type">
+                                    <label class="form-check-label" for="announcementRadio">Announcement Type</label>
+                                </div>
+                            </div>
+                            <!--end type of question-->
+                            <div id="multipleChoice">
+                                <div id="answers">
+
+                                </div>
+                                <!--end answers-->
+
+                            </div>
+                            <!--end multiple Choice-->
+                            <div id="announcementType">
+
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveAndClose">Save and Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+    </main>
+
+    <footer class="mastfoot mt-auto">
+        <div class="inner">
+            <div class="stargarnetReferral">
+                <p>design by
+                    <a target="blank" href="https://www.stargarnet.net/">Stargarnet LLC</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+</div>
+
+{{!--
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->--}}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })//enable bootstrap tooltips
+        //  let htmlStuff = "<input type='text' id='numberOfAnswers' value='5'></input><button type='button' class='btn btn-info' id='updateNumberOfAnswers'>Update number of Answers</button>";
+        //  $('#multipleChoice').prepend(htmlStuff)
+
+        function buildMultipleChoice(msg) {
+            $('#answers').empty();
+            //id to delete answers
+            let answerId = 0;
+            function html(i) {
+                return '<div class="form-row answerRow" id="' + i + '">\
+            <div class="form-group col-md-2">\
+                <label for="valueAnswer'+ i + '">value for Answer ' + i + '</label>\
+                <input type="text" class="form-control valueAnswer" id="valueAnswer'+ i + '" value="' + i + '" name="valueOfAnswer' + i + '">\
+            </div>\
+                <div class="form-group col-md-6">\
+                <label for="Answer'+ i + '"><br>Answer ' + i + '</label>\
+                <textarea class="form-control actualAnswer" id="Answer'+ i + '" name="answer' + i + '"></textarea>\
+            </div>\
+                    <div class="form-check form-check-inline">\
+                    <input type="checkbox" class="form-check-input correctAnswer" id="correct'+ i + '" value="' + i + '" name="correct" data-toggle="tooltip" data-placement="top" title="Mark as correct answer">\
+                    <label class="form-check-label" for="correct'+ i + '"></label>\
+                    </div>\
+        </div>'
+            }
+
+            if (!isNaN(msg)) {
+                var numberOfAnswers = msg;
+                console.log(numberOfAnswers)
+                for (let i = msg; i > 0; i--) {
+                    answerId++;
+                    $('#answers').prepend(html(i))
+                }//end for loop  
+
+            }//end check if number
+            else {
+
+                answersArray = JSON.parse(msg.answersArray)
+                console.log(answersArray.length)
+                for (let i = answersArray.length; i > 0; i--) {
+                    answerId++;
+                    console.log(answersArray[i - 1][0])
+                    console.log(answersArray[i - 1][1])
+                    console.log(answersArray[i - 1][2])
+                    updateHTML = '<div class="form-row answerRow" id="' + i + '">\
+            <div class="form-group col-md-2">\
+                <label for="valueAnswer'+ i + '">value for Answer ' + i + '</label>\
+                <input type="text" class="form-control valueAnswer" id="valueAnswer'+ i + '" value="' + answersArray[i - 1][0] + '" name="valueOfAnswer' + i + '">\
+            </div>\
+                <div class="form-group col-md-6">\
+                <label for="Answer'+ i + '"><br>Answer ' + i + '</label>\
+                <textarea class="form-control actualAnswer" id="Answer'+ i + '" name="answer' + i + '">' + answersArray[i - 1][1] + '</textarea>\
+            </div>\
+                    <div class="form-check form-check-inline">\
+                    <input type="checkbox" class="form-check-input correctAnswer" id="correct'+ i + '"  name="correct" data-toggle="tooltip" data-placement="top" title="Mark as correct answer">\
+                    <label class="form-check-label" for="correct'+ i + '"></label>\
+                    </div>\
+        </div>'
+                    $('#answers').prepend(updateHTML)
+                    $('#correct' + i).attr('checked', answersArray[i - 1][2])
+                }//end forloop
+            }//end else
+            $('#multipleChoice').off();
+            $('#deleteAnswer').remove();
+            $('#addAnswer').remove();
+            let deleteAnswerButton = "<button type='button' class='btn btn-warning' id='deleteAnswer'>delete answer</button>";
+            $('#multipleChoice').append(deleteAnswerButton)
+
+            $('#multipleChoice').on('click', '#deleteAnswer', function () {
+
+                $('#' + answerId).remove();
+                if (answerId > 0) {
+                    answerId--
+                };
+
+
+            })//end on delete answer
+            let addAnswerButton = "<button type='button' class='btn btn-info' id='addAnswer'>add answer</button>";
+            $('#multipleChoice').append(addAnswerButton)
+            $('#multipleChoice').on('click', '#addAnswer', function () {
+
+                answerId++
+                $('#answers').append(html(answerId));
+
+
+
+            })//end on delete answer
+            //  specificAnswer = [answerId,answerValue,answer,correct,]
+            var answers = []
+
+        }//end buildMulitpleChoice
+        function readMultipleChoice() {
+            let answersArray = [];
+            $('.answerRow').each(function (rowNumber, element) {
+
+                let valueAnswer = $(element).find('.valueAnswer').val();
+                let actualAnswer = $(element).find('.actualAnswer').val();
+                let correctAnswer = $(element).find('.correctAnswer').is(":checked");
+                let specificAnswer = [valueAnswer, actualAnswer, correctAnswer]
+                answersArray.push(specificAnswer)
+            })//end .each
+            return answersArray;
+        }//end readMultipleChoice
+
+        function bothUpdateAndNew() {
+
+            //$('#essayType').change(function(){
+            //$('#multipleChoice').hide();
+            //})     
+            if ($('#multipleChoice').attr('checked')) {
+                $('#multipleChoice').show(100);
+            }
+
+            $('#typeOfQuestion').off();
+            $('#typeOfQuestion').on('click', '#essayType', function () {
+                $('#multipleChoice').hide(100);
+
+            })//end on click essayType
+            $('#typeOfQuestion').on('click', '#announcementRadio', function () {
+                $('#multipleChoice').hide(100);
+
+            })//end on click essayType
+            $('#typeOfQuestion').on('click', '#multiplechoicetype', function () {
+                $('#multipleChoice').show(100);
+            })//end on click multiplechoice
+        }//end bothUpdateAndNew
+
+
+        $('#newQuestionDiv').on('click', '#createNewQuestion', function () {
+            //get highest order value
+            bothUpdateAndNew();
+            $.ajax({
+                url: "/editor/highestQuestion",
+                type: 'GET',
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+            }).done(function (msg) {
+                let value = msg.max;
+                if (value % 1 != 0) {
+                    value = Math.ceil(value)
+                    $('#questionOrder').val(value)
+                    updateModalNewItem(msg);
+                } else {
+                    value++;
+                    $('#questionOrder').val(value)
+                    updateModalNewItem(msg);
+                }
+
+
+            })//end done
+                .fail(function (xhr, status, errorThrown) {
+                    alert("Sorry, there was a problem!");
+                    console.log("Error: " + errorThrown);
+                    console.log("Status: " + status);
+                    console.dir(xhr);
+                })
+
+            function updateModalNewItem(msg) {
+                $('#exampleModalCenterTitle').html("New Question");
+                $('#catagoryListDiv').empty();
+                for (let i = 0; i < msg.catagoryList.length; i++) {
+                    if (msg.catagoryList[i].catagories_default == true) {
+                        $('#catagoryListDiv').prepend('<div class="form-check" style="color:' + msg.catagoryList[i].catagories_color + '"><input class="form-check-input" type="checkbox" name="catagory" value="' + msg.catagoryList[i].catagories_name + '" id=' + msg.catagoryList[i].catagories_name + ' checked><label class=form-check-label" for=' + msg.catagoryList[i].catagories_name + '>' + msg.catagoryList[i].catagories_name + '</label></div>')
+                    }
+                    else {
+                        $('#catagoryListDiv').prepend('<div class="form-check"style="color:' + msg.catagoryList[i].catagories_color + '"><input class="form-check-input" type="checkbox" name="catagory" value="' + msg.catagoryList[i].catagories_name + '" id=' + msg.catagoryList[i].catagories_name + '><label class=form-check-label" for=' + msg.catagoryList[i].catagories_name + '>' + msg.catagoryList[i].catagories_name + '</label></div>')
+                    }
+                }//end for
+
+
+                $('#questionName').val('');
+                $('#questionBody').html('');
+
+                buildMultipleChoice(5);
+                $('#multiplechoicetype').prop('checked', true);
+                $('#essayType').prop('checked', false);
+                $('#announcementRadio').prop('checked', false);
+
+                $('#updateAndClose').attr('id', 'saveAndClose');
+                $('#saveAndClose').html('Save and Close');
+                $('#deleteQuestion').remove();
+                $('#modal').modal('toggle');
+
+
+                $('#modal').off('click', '#saveAndClose');
+                $('#modal').on('click', '#saveAndClose', function () {
+                    let package = $('#mainForm').serializeArray();
+                    answersArray = readMultipleChoice();
+
+                    package.push({ name: 'answersArray', value: JSON.stringify(readMultipleChoice()) })
+                    $.ajax({
+                        url: "/editor",
+                        data: package,
+                        type: 'POST',
+                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    }).done(function (msg) {
+                        console.log(msg)
+                        location.reload(true);
+                    })//end done
+                        .fail(function (xhr, status, errorThrown) {
+                            alert("Sorry, there was a problem!");
+                            console.log("Error: " + errorThrown);
+                            console.log("Status: " + status);
+                            console.dir(xhr);
+                        })
+
+                })//END SAVEAND CLOSE
+
+
+            }//END updateModalNewItem
+        }) //end click createNewQuestion
+
+
+        $('#questionlist').on('click', 'li', function () {
+
+
+            let questionId = this.id.slice(10);
+            $.ajax({
+                url: "/editor/api",
+                data: "questionId=" + questionId,
+                type: 'GET',
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+            }).done(function (msg) {
+
+                updateModal(msg);
+
+            })//end done
+                .fail(function (xhr, status, errorThrown) {
+                    alert("Sorry, there was a problem!");
+                    console.log("Error: " + errorThrown);
+                    console.log("Status: " + status);
+                    console.dir(xhr);
+                })
+
+            function updateModal(msg) {
+                //console.log(msg.catagoryList)
+                $('#catagoryListDiv').empty();
+                for (let i = 0; i < msg.catagoryList.length; i++) {
+                    if ($.inArray(msg.catagoryList[i].catagories_name, msg.selectedCatagories) != -1) {
+
+                        $('#catagoryListDiv').prepend('<div class="form-check" style="color:' + msg.catagoryList[i].catagories_color + '"><input class="form-check-input" type="checkbox" name="catagory" value="' + msg.catagoryList[i].catagories_name + '" id=' + msg.catagoryList[i].catagories_name + ' checked><label class=form-check-label" for=' + msg.catagoryList[i].catagories_name + '>' + msg.catagoryList[i].catagories_name + '</label></div>')
+                    }
+                    else {
+                        $('#catagoryListDiv').prepend('<div class="form-check"style="color:' + msg.catagoryList[i].catagories_color + '"><input class="form-check-input" type="checkbox" name="catagory" value="' + msg.catagoryList[i].catagories_name + '" id=' + msg.catagoryList[i].catagories_name + '><label class=form-check-label" for=' + msg.catagoryList[i].catagories_name + '>' + msg.catagoryList[i].catagories_name + '</label></div>')
+                    }
+                }//end for
+
+
+                $('#questionOrder').val(msg.questionOrder)
+                $('#exampleModalCenterTitle').html("Update Question");
+                $('#modal').modal('toggle');
+                buildMultipleChoice(msg);
+
+
+                $('#questionName').val(msg.questionTitle)
+                $('#questionBody').html(msg.questionBody)
+                $('#saveAndClose').attr('id', 'updateAndClose');
+                if (msg.questionType == "mchoice") {
+                    $('#multipleChoice').show();
+                    $('#essayType').prop('checked', false)
+                    $('#announcementRadio').prop('checked', false)
+                    $('#multiplechoicetype').prop('checked', true)
+                }
+                if (msg.questionType == "essay") {
+                    $('#multipleChoice').hide();
+                    $('#essayType').prop('checked', true)
+                    $('#announcementRadio').prop('checked', false)
+                    $('#multiplechoicetype').prop('checked', false)
+
+                }
+                if (msg.questionType == "announcement") {
+                    $('#multipleChoice').hide();
+                    $('#essayType').prop('checked', false)
+                    $('#announcementRadio').prop('checked', true)
+                    $('#multiplechoicetype').prop('checked', false)
+
+                }
+                if (!$('#deleteQuestion').length) {
+                    let htmlStuff = "<button type='button' class='btn btn-danger' id='deleteQuestion'>Delete Question</button>";
+                    $('.modal-body').append(htmlStuff);
+                    $('.modal-body').on('click', '#deleteQuestion', function () {
+                        if (window.confirm('Do you really want to delete this question?')) {
+
+                            let package = { questions_id: questionId }
+                            $.ajax({
+                                url: "/editor/delete",
+                                data: package,
+                                type: 'POST',
+                                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                            }).done(function (msg) {
+                                console.log(msg)
+                                if (msg == 'please fill in at least one adult and one child name') {
+                                    alert(msg)
+                                }
+                                location.reload(true);
+                            })//end done
+                                .fail(function (xhr, status, errorThrown) {
+                                    alert("Sorry, there was a problem!");
+                                    console.log("Error: " + errorThrown);
+                                    console.log("Status: " + status);
+                                    console.dir(xhr);
+                                })
+                        }//end if window.confirm
+                    })//end deleteQuestionOnClick
+                }//end if statement checking if deleteQuestion botton alreadye exists. 
+
+
+
+                $('#saveAndClose').attr('id', 'updateAndClose');
+                $('#updateAndClose').html('Update and Close');
+                $('#modal').off('click', '#updateAndClose');
+                $('#modal').on('click', '#updateAndClose', function () {
+                    let package = $('#mainForm').serializeArray();
+                    package.push({ name: 'questions_id', value: questionId });
+                    package.push({ name: 'answersArray', value: JSON.stringify(readMultipleChoice()) });
+                    $.ajax({
+                        url: "/editor/update",
+                        data: package,
+                        type: 'POST',
+                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    }).done(function (msg) {
+                        console.log(msg)
+                        if (msg == 'please fill in at least one adult and one child name') {
+                            alert(msg)
+                        }
+                        location.reload(true);
+                    })//end done
+                        .fail(function (xhr, status, errorThrown) {
+                            alert("Sorry, there was a problem!");
+                            console.log("Error: " + errorThrown);
+                            console.log("Status: " + status);
+                            console.dir(xhr);
+                        })
+                })//END updateAndClose onClick
+                bothUpdateAndNew();
+            }//end updateModal
+
+        })//end questionList onClick
+
+
+
+
+    })//end on load
+</script>

@@ -1,0 +1,384 @@
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <h1 class="masthead-brand">Edit Users</h1>
+        </div>
+    </header>
+    {{#if message}}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {{/if}}
+    <main role="main" class="inner cover">
+
+        <div id="newItemDiv">
+            {{!--
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal"> --}}
+                <button type="button" class="btn btn-primary" id="createNewItem">
+                    create new user
+                </button>
+        </div>
+
+        <div id="table">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">User Name</th>
+                        <th scope="col">Student Type</th>
+                        <th scope="col">Role</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+
+                </tbody>
+            </table>`
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ModalTitle"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h6 id="IdValue"></h6>
+                        {{!-- BEGIN FORM+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                        --}}
+                        <form class="form-group" id="mainForm">
+                            <div id="userNameInputDiv"></div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label class="my-1 mr-2" for="email" id="emailLabel">Email</label>
+                                    <input type="email" class="form-control mb-2 mr-sm-2" aria-describedby="emailHelp" id="email" name="email">
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label for="level">Level#</label>
+                                    <input type="text" class="form-control" id="level" value="" name="level">
+                                </div>
+                            </div>
+
+
+                            <!--NEW ROW-->
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="studentType">Student Type</label>
+                                    <select class="custom-select" id="studentType" name="studentType"></select>
+                                </div>
+                                <div class="form-group ">
+                                    <label for="studentType">Role Type</label>
+                                    <select class="custom-select" id="roleType" name="roleType"></select>
+                                </div>
+                            </div>
+                            <!--NEW ROW-->
+                            <div class="form-row" id="buttonDiv">
+                                <button type="button" class="btn btn-info" id="updatePassword">Update Password</button>
+
+                            </div>
+
+
+                        </form>
+
+                        {{!-- END FORM++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                        --}}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveAndClose">Save and Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+    <footer class="mastfoot mt-auto">
+        <div class="inner">
+            <div class="stargarnetReferral">
+                <p>design by
+                    <a target="blank" href="https://www.stargarnet.net/">Stargarnet LLC</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+</div>
+
+{{!--
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->--}}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.js"></script>
+
+<script>
+    $(document).ready(function () {
+        x = '{{{package}}}';
+        rows = JSON.parse(x);
+        catagories = '{{{packageCatagories}}}';
+        catagories = JSON.parse(catagories);
+
+        console.log(catagories);
+
+        //BUILD TABLE ROWS
+        $.each(rows, function (index) {
+            let item_id = this.users_id;
+            let item_name = this.users_username;
+            let item_color = 'black'
+            let htmlId = "#itemDivId" + item_id;
+            let thisRow = this;
+            console.log(htmlId)
+            $(htmlId).css('color', item_color)
+            itemLink = '#itemLink' + item_id;
+            address = window.location.href + '/api/getAnswers?catagoryName=' + item_name;
+            $(itemLink).attr('href', address);
+            $(itemLink).css('color', item_color)
+
+            tableHTML = `
+    <tr  id='#row${index}'>
+      <th scope="row" id='#row${index}'>${item_id}</th>
+      <td id='#row${index}'>${item_name}</td>
+      <td id='#row${index}'>${this.users_catagory}</td>
+      <td id='#row${index}'>${this.users_role}</td>
+    </tr>`
+
+            $('#tableBody').append(tableHTML);
+
+        })//end each
+
+        //new Item button
+
+        $('#newItemDiv').on('click', '#createNewItem', function () {
+            let user = {
+                users_catagory: "student",
+                users_email: "",
+                users_emailvalidated: null,
+                users_highestlevel: "0",
+                users_id: "unknown",
+                users_role: "student",
+                users_username: "create new User",
+                freshUser: true
+            }
+            buildModal(user);
+        })
+
+
+
+        //MODAL WORK
+        //the modal is where all the updates happen. It is always present but normally hidden from the user. 
+        //When a new item is built, the default data, passed in on click new user, is used, when an update is built, a real data is used from the package passed to the page on load.
+
+
+
+        //click to go to update MODAL
+        //tr and td are funky, as such it is better to work with td and use the this keyword
+        $('#tableBody').on('click', 'td, th', function () {
+            console.log(this)
+            //get the correct user information
+            let userIndex = this.id.slice(4);
+            let user = rows[userIndex];
+            buildModal(user);
+            $('#modal').modal('toggle');
+        })//end click
+
+
+        //UPDATE THE MODAL
+        function buildModal(user) {
+            //static stuff++++
+            $('#ModalTitle').html(user.users_username);
+            $('#IdValue').html('ID: ' + user.users_id);
+
+            //Dynamic stuff++++
+            $('#email').val(user.users_email);
+            $('#level').val(user.users_highestlevel)
+
+            //build catagory selector
+            $('#studentType').empty(); //empty catagory selector
+            $.each(catagories, function () {
+                let studentTypeHTML = `<option id="studentType${this.catagories_name}" value="${this.catagories_name}">${this.catagories_name}</option>`
+                $('#studentType').append(studentTypeHTML)
+                console.log(this.catagories_name)
+            })
+            $('#studentType').val(user.users_catagory).prop('selected', true);
+
+
+
+
+
+            //Build role selector
+            //Same idea is catagory selector
+            let roles = [{ role: 'admin' }, { role: 'student' }, { role: 'Debbie' }, { role: 'Raja' }]
+            $('#roleType').empty();
+            $.each(roles, function () {
+                let roleHTML = `<option id="roleType${this.role}" value="${this.role}">${this.role}</option>`
+                $('#roleType').append(roleHTML)
+            })
+            $('#roleType').val(user.users_role).prop('selected', true);
+
+            //build password updater
+            var newPassword = "";
+            $('#buttonDiv').on('click', '#updatePassword', function () {
+
+                newPassword = prompt("enter new password here : ", "")
+                if (newPassword != "") {
+                    alert('password will update to this value on clicking save and close')
+                } else {
+                    alert('password not updated')
+                }
+            })
+
+            //Branch between UPDATE EXISTING USER and CREATE FRESH USER_____________________________________________________________________________________________
+
+            //build delete User Button
+            if (user.freshUser != true) {
+                if (!$('#deleteItem').length) {
+                    let htmlStuff = "<button type='button' class='btn btn-danger' id='deleteItem'>Delete User</button>";
+                    $('.modal-body').append(htmlStuff);
+                    $('.modal-body').on('click', '#deleteItem', function () {
+                        if (window.confirm('Do you really want to delete this user?')) {
+
+                            let targetId = user.users_id;
+                            $.ajax({
+                                url: "/users/api/delete",
+                                data: "deleteTargetId=" + targetId,
+                                type: 'GET',
+                                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                            }).done(function (msg) {
+                                alert(msg)
+                                location.reload(true);
+                            })//end done
+                                .fail(function (xhr, status, errorThrown) {
+                                    alert("Sorry, there was a problem!");
+                                    console.log("Error: " + errorThrown);
+                                    console.log("Status: " + status);
+                                    console.dir(xhr);
+                                })
+                        }//end if window.confirm
+                    })//end deleteItemOnClick
+                }//end if statement checking if deleteItem botton alreadye exists.
+
+                //UPDATE AND CLOSE BUTTON
+                $('#saveAndClose').attr('id', 'updateAndClose');
+                $('#updateAndClose').html('Update and Close');
+                $('#modal').off('click', '#updateAndClose');
+                $('#modal').on('click', '#updateAndClose', function () {
+                    let package = $('#mainForm').serializeArray();
+
+
+                    package.push({ name: 'newPassword', value: newPassword })
+                    package.push({ name: 'username', value: user.users_id })
+                    $.ajax({
+                        url: "/users/api/updateUser",
+                        data: package,
+                        type: 'POST',
+                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    }).done(function (msg) {
+                        console.log(msg)
+                        switch (msg) {
+                            case 'error: duplicate key value violates unique constraint "users_users_username_key"':
+                                alert('this username value has already been entered for am existing user')
+                                break;
+                            case 'error: duplicate key value violates unique constraint "users_users_email_key"':
+                                alert('email addresses must be unique')
+                                break;
+                            default:
+                                alert(msg)
+                                location.reload(true);
+                        }
+
+
+                    })//end done
+                        .fail(function (xhr, status, errorThrown) {
+                            alert("Sorry, there was a problem!");
+                            console.log("Error: " + errorThrown);
+                            console.log("Status: " + status);
+                            console.dir(xhr);
+                        })
+                })//END updateAndClose onClick
+
+
+                //get rid of username input
+                $('#userNameInputDiv').empty();
+
+            }//end check to make sure is an update of existing user
+
+            //FRESH USER________________________________________________________________________________________________________________________________________________
+            else {
+                //add input for username
+                userNameInputHTML = `  <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label class="my-1 mr-2" for="usernameInput" id="userNameLabel">Username</label>
+                                    <input type="username" class="form-control mb-2 mr-sm-2" aria-describedby="username" id="usernameInput" name="username">
+                                </div>`
+                if (!$('#usernameInput').length) {
+                    $('#userNameInputDiv').append(userNameInputHTML);
+                }
+
+                //get rid of delete item button 
+                $('#deleteItem').remove();
+
+                //SAVE AND CLOSE BUTTON
+                $('#updateAndClose').attr('id', 'saveAndClose');
+                $('#saveAndClose').html('Save and Close');
+
+                $('#modal').modal('toggle');
+
+
+                $('#modal').off('click', '#saveAndClose');
+                $('#modal').on('click', '#saveAndClose', function () {
+                    let package = $('#mainForm').serializeArray();
+
+
+                    package.push({ name: 'newPassword', value: newPassword })
+
+                    $.ajax({
+                        url: "/users/api/newUser",
+                        data: package,
+                        type: 'POST',
+                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    }).done(function (msg) {
+                        console.log(msg)
+                        switch (msg) {
+                            case 'error: duplicate key value violates unique constraint "users_users_username_key"':
+                                alert('this username value has already been entered for am existing user')
+                                break;
+                            case 'error: duplicate key value violates unique constraint "users_users_email_key"':
+                                alert('email addresses must be unique')
+                                break;
+                            default:
+                                alert(msg)
+                                location.reload(true);
+                        }
+
+
+                    })//end done
+                        .fail(function (xhr, status, errorThrown) {
+                            alert("Sorry, there was a problem!");
+                            console.log("Error: " + errorThrown);
+                            console.log("Status: " + status);
+                            console.dir(xhr);
+                        })
+
+                })//END SAVEAND CLOSE
+
+
+
+            }//end make sure is a FRESH USER
+
+
+        }//end buildModal
+
+        //   #updatePassword--
+
+    })//end on load
+</script>

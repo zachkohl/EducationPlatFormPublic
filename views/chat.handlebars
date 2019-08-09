@@ -1,0 +1,118 @@
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <h1 class="masthead-brand" id="userId"></h1>
+        </div>
+    </header>
+    {{#if message}}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {{/if}}
+    <div class='container'>
+        <div class=row 'row'>
+            <div class='col-md-6'>
+                <div class='chat' id='chat'>
+                    <form id='messageForm'>
+                        <div class='form-group'>
+                            <label>Enter Message</label>
+                            <textarea class='form-control' id="message">
+                              </textarea>
+                            <br />
+                            <input type='submit' class='btn btn-primary' value='Send Message'>
+                        </div>
+                    </form>
+                </div>
+            </div>
+                        <div class='col-md-4'>
+                <div class='chat' id='chatId'>
+                    <form id='messageForm'>
+                        <div class='form-group'>
+                            <label>Enter Id</label>
+                            <input type="text" id="toId">
+                              </textarea>
+                            <br />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <main role="main" class="inner cover">
+
+
+    </main>
+
+
+    <footer class="mastfoot mt-auto">
+        <div class="inner">
+            <div class="stargarnetReferral">
+                <p>design by
+                    <a target="blank" href="https://www.stargarnet.net/">Stargarnet LLC</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+</div>
+
+{{!--
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->--}}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.js"></script>
+<script src="color-picker.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+</script>
+<script>
+    $(document).ready(function () {
+        $(function () {
+            var socket = io.connect();
+            var socketId = ''
+            socket.on('connect',function(){
+                   console.log(socket.id)
+                   socketId = socket.id;
+                   $('#userId').html(socketId)
+                   //run AJAX to check credentials
+                              
+
+            })
+
+            $('#messageForm').submit(function(e){
+                e.preventDefault();
+                 packet= socket
+                 msg = $('#message').val()
+                 console.log(msg)
+                 toId =$('#toId').val()
+                 
+                socket.emit('sendToThisId',toId,msg);
+                $('#message').val('')
+                console.log('Submitted')
+                 socket.emit('my message',msg)
+            }) 
+           
+
+//socket.on('my mesage', function(data){
+ //   $('#chat').append(`<div class='card-body bg-light'>`+data.msg+`</div>`)
+//})
+
+socket.on('my message', function(data){
+    alert('!!!!!!!!!!!!')
+    $('#chat').append(`<div class='card-body bg-light'>`+data.msg+`</div>`)
+})
+        })
+    })//end on load
+</script>

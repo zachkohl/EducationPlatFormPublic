@@ -1,0 +1,195 @@
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <h1 class="masthead-brand">Grader</h1>
+        </div>
+    </header>
+    {{#if message}}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {{/if}}
+    <main role="main" class="inner cover">
+
+
+
+        <ul class="list-group" id="itemlist">
+            {{#each rows}}
+            <div id="itemDivId{{{catagories_id}}}" <li class="list-group-item itemList" id="itemId{{{catagories_id}}}">
+                <a class="itemTitle" id="itemLink{{{catagories_id}}}">{{catagories_name}}</a>
+                </li>
+            </div>
+            {{/each}}
+        </ul>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">New Question</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-group" id="mainForm">
+                            <div class="form-row">
+                                <div class="form-group col-md-2">
+                                    <label for="questionOrder">Order#</label>
+                                    <input type="text" class="form-control" id="questionOrder" value="" name="questionOrder">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="questionName" id="title">Question Title</label>
+                                    <input type="text" class="form-control" id="questionName" name="questionTitle">
+                                </div>
+                            </div>
+                            <hr>
+                            <p>
+                                <strong>Catagories</strong>
+                            </p>
+                            <div id="catagoryListDiv">
+                            </div>
+                            <hr>
+
+
+                            <label for="questionBody">Question Body</label>
+                            <textarea class="form-control" id="questionBody" name="questionBody" rows="10"></textarea>
+
+                            <div id="typeOfQuestion">
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" id="essayType" value="essay" name="type">
+                                    <label class="form-check-label" for="essayType">Essay Type Question</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" id="multiplechoicetype" value="mchoice" name="type" checked="checked">
+                                    <label class="form-check-label" for="multiplechoicetype">Multiple Choice Type Question</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" id="announcementRadio" value="announcement" name="type">
+                                    <label class="form-check-label" for="announcementRadio">Announcement Type</label>
+                                </div>
+                            </div>
+                            <!--end type of question-->
+                            <div id="multipleChoice">
+                                <div id="answers">
+
+                                </div>
+                                <!--end answers-->
+
+                            </div>
+                            <!--end multiple Choice-->
+                            <div id="announcementType">
+
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveAndClose">Save and Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+    </main>
+
+    <footer class="mastfoot mt-auto">
+        <div class="inner">
+            <div class="stargarnetReferral">
+                <p>design by
+                    <a target="blank" href="https://www.stargarnet.net/">Stargarnet LLC</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+</div>
+
+{{!--
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->--}}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        $.each(rows, function () {
+            let htmlId = "#itemDivId" + this.catagories_id;
+            let thisRow = this;
+            linkItem =
+                console.log(htmlId)
+            $(htmlId).css('color', thisRow.catagories_color)
+            itemLink = '#itemLink' + thisRow.catagories_id;
+            address = window.location.href + '/api/getAnswers?catagoryName=' + thisRow.catagories_name;
+            $(itemLink).attr('href', address);
+            $(itemLink).css('color', thisRow.catagories_color)
+
+            /*let buttonGrabber = "#truncateButton"+ thisRow.catagories_id;
+             $(htmlId).on('click', buttonGrabber, function () {
+            
+            
+            if (window.confirm('WARNING! THIS ACTION CANNOT BE REVERSED!! If you click OK, all answers entered by students belonging to this catagory will be perminently deleted')) {
+            console.log(thisRow.catagories_id)
+             $.ajax({
+                            url: "/answers/api/delete",
+                            data: "catagoryName=" + thisRow.catagories_name,
+                            type: 'GET',
+                            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                        }).done(function (msg) {
+            
+                            alert(msg)
+                        })//end done
+                            .fail(function (xhr, status, errorThrown) {
+                                alert("Sorry, there was a problem!");
+                                console.log("Error: " + errorThrown);
+                                console.log("Status: " + status);
+                                console.dir(xhr);
+                            })
+            
+            
+                                    }//end confirm
+                      /*  let questionId = this.id.slice(10);
+                        $.ajax({
+                            url: "/editor/api",
+                            data: "questionId=" + questionId,
+                            type: 'GET',
+                            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                        }).done(function (msg) {
+            
+                            updateModal(msg);
+            
+                        })//end done
+                            .fail(function (xhr, status, errorThrown) {
+                                alert("Sorry, there was a problem!");
+                                console.log("Error: " + errorThrown);
+                                console.log("Status: " + status);
+                                console.dir(xhr);
+                            })*/
+
+
+        })//end onclick
+
+
+    })//end each
+
+
+
+
+
+    })//end on load
+</script>

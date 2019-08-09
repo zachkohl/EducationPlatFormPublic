@@ -1,0 +1,87 @@
+{{!-- <ul id="message-list"></ul>
+    <form id="message-form">
+      <input type='text' id='message-text'>
+      <input type="submit">
+    </form> --}}
+
+{{!--
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->--}}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.js"></script>
+    <script src="https://unpkg.com/@pusher/chatkit-client@1/dist/web/chatkit.js"></script>
+
+</script>
+<script>
+    $(document).ready(function () {
+const tokenProvider = new Chatkit.TokenProvider({
+  url: "https://us1.pusherplatform.io/services/chatkit_token_provider/v1/b57aef20-cabf-4023-9289-475f1847df96/token"
+});
+/*
+const chatManager = new Chatkit.ChatManager({
+  instanceLocator: "v1:us1:b57aef20-cabf-4023-9289-475f1847df96",
+  userId: "bookercodes",
+  tokenProvider: tokenProvider
+});       
+
+  chatManager
+        .connect()
+        .then(currentUser => {
+          currentUser.subscribeToRoom({
+            roomId: currentUser.rooms[0].id,
+            hooks: {
+              onMessage: message => {
+                const ul = document.getElementById("message-list");
+                const li = document.createElement("li");
+                li.appendChild(
+                  document.createTextNode(`${message.senderId}: ${message.text}`)
+                );
+                ul.appendChild(li);
+              }
+            }
+          });
+
+          const form = document.getElementById("message-form");
+          form.addEventListener("submit", e => {
+            e.preventDefault();
+            const input = document.getElementById("message-text");
+            currentUser.sendMessage({
+              text: input.value,
+              roomId: currentUser.rooms[0].id
+            });
+            input.value = "";
+          });
+        })
+        .catch(error => {
+          console.error("error:", error);
+        });
+
+onPresenceChanged: (state, user) => {
+  console.log(`User ${user.name} is ${state.current}`)
+}*/
+
+
+
+    })//end on load
+</script>
+<!-- Start of LiveChat (www.livechatinc.com) code -->
+<script type="text/javascript">
+window.__lc = window.__lc || {};
+window.__lc.license = 10379192;
+(function() {
+  var lc = document.createElement('script'); lc.type = 'text/javascript'; lc.async = true;
+  lc.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.livechatinc.com/tracking.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(lc, s);
+})();
+</script>
+<noscript>
+<a href="https://www.livechatinc.com/chat-with/10379192/">Chat with us</a>,
+powered by <a href="https://www.livechatinc.com/?welcome" rel="noopener" target="_blank">LiveChat</a>
+</noscript>
+<!-- End of LiveChat code -->

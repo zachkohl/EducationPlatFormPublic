@@ -1,0 +1,442 @@
+{{!-- <div id="bigContainer" class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column"> --}}
+    {{!--
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <h1 class="masthead-brand">TEEN AID</h1>
+        </div>
+    </header> --}} {{!-- {{#if message}}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {{/if}} --}}
+    <div class="container">
+        <h1>TEEN-AID QUIZ</h1>
+        <div id="alertBox">
+        </div>
+        <div id="content">
+            <div id="questionBody"></div>
+
+            <form class="form-group" id="mainForm" method="post">
+                <div id="answers">
+
+                </div>
+            </form>
+            <div id="backwardAndForward">
+                
+    </div>
+        <footer class="mastfoot mt-auto">
+        <div class="inner">
+            <div class="stargarnetReferral">
+                <p>design by
+                    <a target="blank" href="https://www.stargarnet.net/">Stargarnet LLC</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+        </div>
+        <!--end content-->
+    </div>
+    
+    <!-- end container-->
+
+
+
+{{!-- </div> --}}
+
+{{!--
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->--}}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+<script src="/jquery.history.js"></script>
+
+<script>
+    //setup
+    $(document).ready(function () {
+        // HistoryJS
+        History.Adapter.bind(window, 'statechange', function () {
+            var State = History.getState();
+        });
+
+
+       
+
+        function URLpointsToThisQuestionId() {
+            let x = window.location.href.split("=").pop();
+            if (!isNaN(x)) {
+                return x;
+            }
+            else {
+                return "noId";
+            }
+        }
+
+
+        //get question information
+        let currentQuestion = URLpointsToThisQuestionId();
+        buildQuestionById(currentQuestion)
+        function buildQuestionById(currentQuestion) {
+            $.ajax({
+                url: "/quiz/api/getQustion",
+                data: "questionId=" + currentQuestion,
+                type: 'GET',
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+            }).done(function (msg) {
+                console.log(msg)
+                catchMessage(msg);
+            })//end done
+                .fail(function (xhr, status, errorThrown) {
+                    alert("Sorry, there was a problem!");
+                    console.log("Error: " + errorThrown);
+                    console.log("Status: " + status);
+                    console.dir(xhr);
+                })
+        }//end buildQuestionById
+        function buildQuestion(msg) {
+            //  buildBackandForwardButtion(msg); //pass to build navigation
+            $('#questionBody').empty();
+            $('#answers').empty();
+            $('#backwardAndForward').empty();
+            $('#backwardAndForward').off();
+            //set color
+            $('body').css('background-color', msg.color)
+            $('.container').css('hieght', '100%')
+            if (typeof msg.color === 'undefined') {
+                $('body').css('background-color', 'white')
+            }
+            //build back and forward buttons
+            //back button
+            if (msg.isLowerQuestion == true) {
+                $('#backwardAndForward').append('<button type="button" class="btn btn-warning" id="backButton">back</button>')
+                $('#backwardAndForward').on('click', '#backButton', function () {
+                    buildQuestionById(msg.lowerQuestionId)
+                });
+            }
+            if (msg.isHigherQuestion == true) {
+                $('#backwardAndForward').append('<button type="button" class="btn btn-warning" id="forwardButton">forward</button>')
+                $('#backwardAndForward').on('click', '#forwardButton', function () {
+                    buildQuestionById(msg.higherQuestionId)
+                });
+            }
+
+
+
+
+            switchCheck = msg.questionType;
+
+            switch (switchCheck) {
+                case "mchoice":
+                    buildMultipleChoiceQuestion();
+                    break;
+                case "multipleAnswer":
+                    buildMultipleAnswerQuestion();
+                    break;
+                case "essay":
+                    buildEssayQuestion()
+                    break;
+                case "announcement":
+                    buildAnnouncement();
+                    break;
+                default:
+                    alert('question does not have a specified type')
+            }//end switch
+
+            $('#questionBody').html(msg.questionBody)
+
+            function buildMultipleChoiceQuestion() {
+                var answersArray = msg.answersArray;
+                for (i = 0; i < answersArray.length; i++) {
+                    var htmlContent =  '<div class="row answerRow"><div class="col-1 valueOfQuestion float">'+answersArray[i][0]+'</div><div class="col-auto selectAnswer"><div class="form-check" id="questionPart"><input type="radio" class="form-check-input" id="answer'+i+'" value="'+answersArray[i][0]+'" name="answer"><label class="form-check-label answerRowSub" for="answer'+i+'">'+answersArray[i][1]+'</label></div></div></div><!-- end row-->';
+                    $('#answers').append(htmlContent)
+                }//end for loop
+                addSubmitMultipleChoice(msg);
+            }//end buildMultipleChoice
+
+            function buildMultipleAnswerQuestion() {
+                let answersArray = msg.answersArray;
+                for (i = 0; i < answersArray.length; i++) {
+                    let htmlContent = '<div class="row answerRow"><div class="col-1 valueOfQuestion float">'+answersArray[i][0]+'</div><div class="col-auto selectAnswer"><div class="form-check"><input type="checkbox" class="form-check-input" id="answer'+i+'" value="'+answersArray[i][0]+'" name="answer"><label class="form-check-label answerRowSub" for="answer'+i+'">'+answersArray[i][1]+'</label></div></div></div><!-- end row-->'
+                    $('#answers').append(htmlContent)
+                }//end for loop
+                addSubmitMultipleChoice(msg);
+            }//end buildMultipleAnswerQuestion
+
+            function addSubmitMultipleChoice(msg) {
+                $('#submitButton').remove();
+                $('#content').off();
+                $('form').append('<button type="button" class="btn btn-primary" id="submitButton">Submit</button>');
+                $('#content').on('click', '#submitButton', function () {
+                    if ($('input[name=answer]:checked').length) {
+                        let package = $('#mainForm').serializeArray();
+
+                        package.push({ name: 'questionId', value: msg.questionId })
+                        $.ajax({
+                            url: "/quiz/api/submitAnswer",
+                            data: package,
+                            type: 'POST',
+                            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                        }).done(function (msg) {
+                            console.log('+++++++++++++++++++++++')
+                            console.log(msg)
+                            catchMessage(msg);
+                        })//end done
+                            .fail(function (xhr, status, errorThrown) {
+                                alert("Sorry, there was a problem!");
+                                console.log("Error: " + errorThrown);
+                                console.log("Status: " + status);
+                                console.dir(xhr);
+                            })
+                    }//end check at least on checkbox
+                    else {
+                        alert('please select an answer before submitting')
+                    }
+                });//end on submitButton
+            }//end addSubmitMultipleChoice()
+
+
+
+            function buildEssayQuestion() {
+                let htmlContent = '<div class="row answerRow">\
+<label for="answerArea">Type answer here</label>\
+<textarea class="form-control" id="answer" rows="3" name="answer"></textarea>\
+</div><!-- end row-->'
+                $('#answers').append(htmlContent)
+                addSubmitEssay(msg);
+            }
+            function addSubmitEssay(msg) {
+                $('#submitButton').remove();
+                $('#content').off();
+                $('form').append('<button type="button" class="btn btn-primary" id="submitButton">Submit</button>');
+                $('#content').on('click', '#submitButton', function () {
+                    let answerValue = $('#answer').val();
+                    console.log(answerValue)
+                    if (answerValue) {
+                        let package = $('#mainForm').serializeArray();
+
+                        package.push({ name: 'questionId', value: msg.questionId })
+                        $.ajax({
+                            url: "/quiz/api/submitAnswer",
+                            data: package,
+                            type: 'POST',
+                            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                        }).done(function (newMsg) {
+                            console.log('+++++++++++++++++++++++')
+                            console.log(newMsg)
+                            catchMessage(newMsg);
+                        })//end done
+                            .fail(function (xhr, status, errorThrown) {
+                                alert("Sorry, there was a problem!");
+                                console.log("Error: " + errorThrown);
+                                console.log("Status: " + status);
+                                console.dir(xhr);
+                            })
+                    }//end check at least on checkbox
+                    else {
+                        alert('please put something in the answer box before submitting')
+                    }
+                });//end on submitButton
+            }//end addSubmitEssay()
+
+            function buildAnnouncement() {
+
+                $('#submitButton').remove();
+                $('#content').off();
+                $('form').append('<button type="button" class="btn btn-primary" id="submitButton">Continue</button>');
+                $('#content').on('click', '#submitButton', function () {
+                    let package = $('#mainForm').serializeArray();
+
+                    package.push({ name: 'questionId', value: msg.questionId })
+                    console.log(package)
+                    $.ajax({
+                        url: "/quiz/api/submitAnswer",
+                        data: package,
+                        type: 'POST',
+                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    }).done(function (newMsg) {
+                        console.log('+++++++++++++++++++++++')
+                        console.log(newMsg)
+                        catchMessage(newMsg);
+                    })//end done
+                        .fail(function (xhr, status, errorThrown) {
+                            alert("Sorry, there was a problem!");
+                            console.log("Error: " + errorThrown);
+                            console.log("Status: " + status);
+                            console.dir(xhr);
+                        })
+
+                });//end on submitButton
+            }//end buildAnnouncement
+            questionIdString = String(msg.questionId);
+            currentState = History.getCurrentIndex;
+            History.pushState({ state: currentState }, "Teen-Aid", "?questionId=" + questionIdString);
+        }//end buildQuestion
+
+        function catchMessage(msg) {
+            //check for messages
+
+
+            if (msg.nextQuestion) {
+                console.log(msg.successAlert)
+                switch (msg.successAlert) {
+                    case 'CorrectAnswer': {
+                        messageFlash('success', 'correct answer')
+                        buildQuestion(msg.nextQuestion)
+                        return
+                    }
+                    case 'answerSaved':
+                        {
+                            messageFlash('success', 'answer saved')
+                            buildQuestion(msg.nextQuestion)
+                            return
+                        }
+                    default:
+                        {
+                            messageFlash('success', 'correct answer')
+                            buildQuestion(msg.nextQuestion)
+                            return
+                        }
+                }
+
+            }
+            switch (msg) {
+                case "wrong answer":
+                    messageFlash('warning', 'wrong answer, try again')
+                    break;
+                case "no more questions in path":
+                    alert('Congradulations, you have made it to the end of the quiz, please contact your instructor for further guidance')
+                    break;
+                case "survey complete":
+                    alert('You have completed this quiz, please contact your instructor for further guidance or use the backward/forward buttons to naviate through the content')
+                    break;
+                case "invalid address":
+                    window.location.replace('/quiz')
+                    break;
+                default:
+                    if (msg.message == 'passed this question') {
+                        if (window.confirm('You already completed this question, click OK to move to your current location')) {
+                            buildQuestionById(msg.correctLocationId)
+                            return
+                        }
+                    }//end if msg.message =
+                    else {
+                        buildQuestion(msg)
+                    }
+
+            }//end switch
+
+
+            // }else if(msg == "already passed this question"){
+            //      if (window.confirm('You already completed this question, click OK to move to your current location')){
+            //            buildQuestion(msg)
+            // x = window.location.href.split("quiz");
+            // console.log(x)
+            // x= x[0];
+            //  x = x +"quiz"
+            //  console.log(x)
+            //  window.location = x;
+            //}//end if window.confirm
+            //   }//end if msg.message == arlready passed this question 
+
+
+        }//end catchMessage
+
+        function buildBackandForwardButtion(msg) {
+            $.ajax({
+                url: "/quiz/api/navData",
+                data: "questionId=" + msg.questionId + "&questionOrder=" + msg.questionOrder,
+                type: 'GET',
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+            }).done(function (msg) {
+                console.log(msg)
+                part2BackForwardButtons(msg);
+            })//end done
+                .fail(function (xhr, status, errorThrown) {
+                    alert("Sorry, there was a problem!");
+                    console.log("Error: " + errorThrown);
+                    console.log("Status: " + status);
+                    console.dir(xhr);
+                })
+            //takes in msg (existing message that is building current state), uses to determine current location
+            function part2BackForwardButtons(forwardBackwardData) {
+                $('#backButton').remove();
+                $('#forwardButton').remove();
+                $('#navButtons').off();
+                if (forwardBackwardData.isLowerQuestion == true) {
+                    $('#navButtons').append('<button type="button" class="btn btn-warning" id="backButton">back</button>')
+                    $('#navButtons').on('click', '#backButton', function () {
+                        buildQuestion(forwardBackwardData.lowerQuestion);
+                    });//end on backbutton
+                }//end if lowerQuestion
+                if (forwardBackwardData.isHigherQuestion == true) {
+                    $('#navButtons').append('<button type="button" class="btn btn-success" id="forwardButton">forward</button>')
+                    $('#navButtons').on('click', '#forwardButton', function () {
+                        buildQuestion(forwardBackwardData.higherQuestion);
+                    });//end on forwardbutton
+                }//end if lowerQuestion
+            }// end part2BackForwardButtons
+
+        }//end buildBackandForwardButton
+
+
+
+
+        function ajaxGet(URLstring, DataString, successCallback) {
+            $.ajax({
+                url: URLstring,
+                data: DataString,
+                type: 'GET',
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+            }).done(function (msg) {
+                successCallback(msg)
+            })//end done
+                .fail(function (xhr, status, errorThrown) {
+                    alert("Sorry, there was a problem!");
+                    console.log("Error: " + errorThrown);
+                    console.log("Status: " + status);
+                    console.dir(xhr);
+                })
+        }//end ajaxGet
+        //      ajaxGet("/quiz/api/navData","questionId=" + msg.questionId,successCallback)
+        //    function successCallback(msg){
+        //     console.log(msg)
+        // };//end successcallback
+
+        //Prep forward and backward data
+        /*   let URL = "/quiz/api/navData";
+           let dataString ="questionId=" + msg.questionId +"&questionOrder="+msg.questionOrder;
+            ajaxGet(URL,dataString,successCallback)
+            function successCallback(msg){
+                var forwardBackwardData = msg;
+                };//end successcallback*/
+        //  messageFlash('primary','hello world')
+        function messageFlash(typeOfAlert, message) {
+            $('#primaryAlert').remove()
+            $('#alertBox').css('margin', '0em')
+            let html = '<div class="alert alert-' + typeOfAlert + '" role="alert" id="primaryAlert">' + message + '</div>'
+            $('#alertBox').append(html)
+
+            $('#primaryAlert').fadeOut(3000, function () { $('#alertBox').css('margin', '4.63em') })
+            // $('#primaryAlert').fadeOut(6000)
+        }
+//DETECT IE
+
+{{!-- function detectIE(){
+    var msie = window.navigator.userAgent.indexOf(".NET ");
+    console.log(window.navigator.userAgent)
+    if(msie >0)
+    {
+        alert('you are using Internet Explorer, this website works a lot better in Crome or Firefox')
+    }
+}
+detectIE(); --}}
+
+
+    })//end on load
+</script>

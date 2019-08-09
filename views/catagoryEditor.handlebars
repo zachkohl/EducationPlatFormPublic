@@ -1,0 +1,279 @@
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <h1 class="masthead-brand">Student Type Editor</h1>
+        </div>
+    </header>
+    {{#if message}}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {{/if}}
+    <main role="main" class="inner cover">
+
+        <!-- Button trigger modal -->
+        <div id="newCatagoryDiv">
+            {{!--
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal"> --}}
+                <button type="button" class="btn btn-primary" id="createNewCatagory">
+                    create new Catagory
+                </button>
+        </div>
+
+        <ul class="list-group" id="catagorylist">
+            {{#each rows}}
+            <li class="list-group-item catagoryList" id="catagoryId{{{catagories_id}}}" style="background-color:{{{catagories_color}}}">
+                <p class="catagoryTitle">{{catagories_name}}</p>
+            </li>
+            {{/each}}
+        </ul>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">New Catagory</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        {{!-- BEGIN FORM+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                        --}}
+                        <form class="form-group" id="mainForm">
+                            <div class="form-row">
+                                <div class="form-group col-md-2">
+                                    <button id="parent">set color</button>
+                                </div>
+                                <input id="color" name="color" type="hidden" value="#FFFFFF">
+                                <div class="form-group col-md-6">
+
+                                    <label for="catagoryName" id="title">Catagory Title</label>
+                                    <div id="catagoryNameDiv">
+                                        <input type="text" class="form-control" id="catagoryName" name="name">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-check">
+                                <input type="radio" class="form-check-input" id="defaultRadio" value="true" name="radio" checked="checked">
+                                <label class="form-check-label" for="defaultRadio">All new questions will be applied to this catagory by default</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="radio" class="form-check-input" id="notDefaultRadio" value="false" name="radio">
+                                <label class="form-check-label" for="notDefaultRadio">not default for new questions</label>
+                            </div>
+
+                        </form>
+
+                        {{!-- END FORM++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                        --}}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveAndClose">Save and Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+    </main>
+
+    <footer class="mastfoot mt-auto">
+        <div class="inner">
+            <div class="stargarnetReferral">
+                <p>design by
+                    <a target="blank" href="https://www.stargarnet.net/">Stargarnet LLC</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+</div>
+
+
+{{!--
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->--}}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script> {{!-- https://github.com/Sphinxxxx/vanilla-picker --}}
+<script src="color-picker.js"></script>
+<script>
+
+    $(document).ready(function () {
+
+        var parent = document.querySelector('#parent');
+        var picker = new Picker(parent);
+        //   picker.onChange = function(color){
+        //      $('.modal-content').css('background-color',color.rgbString)
+        //     
+        // }
+
+        picker.onDone = function (color) {
+            $('#color').val(color.rgbString)
+            $('.modal-content').css('background-color', color.rgbString)
+        }
+
+        $('#newCatagoryDiv').on('click', '#createNewCatagory', function () {
+            $('.modal-content').css('background-color', '')
+            $('#exampleModalCenterTitle').html("New Catagory");
+
+            if (!$('#catagoryName').length) {
+                $('#catagoryNameDiv').html('<input type="text" class="form-control" id="catagoryName" name="name">');
+            }
+
+            $('#updateAndClose').attr('id', 'saveAndClose');
+            $('#saveAndClose').html('Save and Close');
+            $('#deleteCatagory').remove();
+            $('#modal').modal('toggle');
+        })
+
+        $('#modal').off('click', '#saveAndClose');
+        $('#modal').on('click', '#saveAndClose', function () {
+            let package = $('#mainForm').serialize();
+            $.ajax({
+                url: "/catagoryEditor",
+                data: package,
+                type: 'POST',
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+            }).done(function (msg) {
+                console.log(msg)
+                if (msg == 'error: duplicate key value violates unique constraint "catagories_catagories_name_key"') {
+                    alert('a catagory by that name already exist in the database')
+                }
+                else {
+                    location.reload(true);
+                }
+
+            })//end done
+                .fail(function (xhr, status, errorThrown) {
+                    alert("Sorry, there was a problem!");
+                    console.log("Error: " + errorThrown);
+                    console.log("Status: " + status);
+                    console.dir(xhr);
+                })
+
+        })//END SAVEAND CLOSE
+
+
+
+        $('#catagorylist').on('click', 'li', function () {
+
+            let catagoryId = this.id.slice(10);
+            console.log(this.id.slice(10));
+            $.ajax({
+                url: "/Catagoryeditor/api",
+                data: "catagoryId=" + catagoryId,
+                type: 'GET',
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+            }).done(function (msg) {
+                console.log(msg)
+                updateModal(msg);
+
+            })//end done
+                .fail(function (xhr, status, errorThrown) {
+                    alert("Sorry, there was a problem!");
+                    console.log("Error: " + errorThrown);
+                    console.log("Status: " + status);
+                    console.dir(xhr);
+                })
+
+            function updateModal(msg) {
+
+
+                $('#exampleModalCenterTitle').html("Update catagory");
+                if ($('#catagoryName').length) {
+                    $('#catagoryNameDiv').empty();
+                    $('#catagoryNameDiv').html('<p id="catagoryName"></p>');
+                }
+                $('#catagoryName').html('<strong>' + msg[0].catagories_name + '</strong>')
+                $('#color').val(msg[0].catagories_color);
+                $('.modal-content').css('background-color', msg[0].catagories_color);
+
+                $('#saveAndClose').attr('id', 'updateAndClose');
+                if (msg[0].catagories_default == true) {
+                    $('#defaultRadio').prop('checked', true)
+                    $('#notDefaultRadio').prop('checked', false)
+                }
+                if (msg[0].catagories_default == false) {
+                    $('#defaultRadio').prop('checked', false)
+                    $('#notDefaultRadio').prop('checked', true)
+                }
+                if (!$('#deleteCatagory').length) {
+                    let htmlStuff = "<button type='button' class='btn btn-danger' id='deleteCatagory'>Delete Catagory</button>";
+                    $('.modal-body').append(htmlStuff);
+                    $('.modal-body').on('click', '#deleteCatagory', function () {
+                        if (window.confirm('Do you really want to delete this catagory?')) {
+
+                            let package = { catagoryId: catagoryId,catagoryName:msg[0].catagories_name }
+                            $.ajax({
+                                url: "/catagoryEditor/delete",
+                                data: package,
+                                type: 'POST',
+                                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                            }).done(function (msg) {
+                                console.log(msg)
+                                if (msg != "user deleted") {
+                                    alert(msg)
+                                }
+                                location.reload(true);
+                            })//end done
+                                .fail(function (xhr, status, errorThrown) {
+                                    alert("Sorry, there was a problem!");
+                                    console.log("Error: " + errorThrown);
+                                    console.log("Status: " + status);
+                                    console.dir(xhr);
+                                })
+                        }//end if window.confirm
+                    })//end deleteQuestionOnClick
+                }//end if statement checking if deleteQuestion botton alreadye exists. 
+
+
+
+                $('#saveAndClose').attr('id', 'updateAndClose');
+                $('#updateAndClose').html('Update and Close');
+                $('#modal').off('click', '#updateAndClose');
+                $('#modal').on('click', '#updateAndClose', function () {
+                    let package = $('#mainForm').serializeArray();
+                    package.push({ name: 'catagories_id', value: catagoryId })
+                    $.ajax({
+                        url: "/catagoryEditor/update",
+                        data: package,
+                        type: 'POST',
+                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    }).done(function (msg) {
+                        console.log(msg)
+                        if (msg == 'please fill in at least one adult and one child name') {
+                            alert(msg)
+                        }
+                        location.reload(true);
+                    })//end done
+                        .fail(function (xhr, status, errorThrown) {
+                            alert("Sorry, there was a problem!");
+                            console.log("Error: " + errorThrown);
+                            console.log("Status: " + status);
+                            console.dir(xhr);
+                        })
+                })//END updateAndClose onClick
+                $('#modal').modal('toggle');
+            }//end updateModal
+
+        })//end questionList onClick
+
+
+
+
+    })//end on load
+</script>

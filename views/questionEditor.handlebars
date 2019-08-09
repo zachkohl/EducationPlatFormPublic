@@ -1,0 +1,707 @@
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <h1 class="masthead-brand">Edit Questions</h1>
+        </div>
+    </header>
+    {{#if message}}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {{/if}}
+    <main role="main" class="inner cover">
+
+        <div id="newItemDiv">
+            <button type="button" class="btn btn-primary" id="createNewItem">
+                create new question
+            </button>
+        </div>
+
+        <div id="table">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Question Name</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+
+                </tbody>
+            </table>`
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="modalMain" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ModalTitle"></h5>
+                        <button type="button" class="close" data-dismiss="modalMain" aria-label="Close" id="xclose">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        {{!-- BEGIN FORM+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                        --}}
+                        <form class="form-group" id="mainForm">
+                            <div class="form-row">
+                                <div class="form-group col-md-2">
+                                    <label for="questionOrder">Order#</label>
+                                    <input type="text" class="form-control" id="questionOrder" value="" name="questionOrder">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="questionName" id="title">Question Title</label>
+                                    <input type="text" class="form-control" id="questionName" name="questionTitle">
+                                </div>
+                            </div>
+                            <hr>
+                            <p>
+                                <strong>Student Type</strong>
+                            </p>
+                            <div id="catagoryListDiv">
+                            </div>
+                            <hr>
+                            <p>
+                                <strong>Role Type</strong>
+                            </p>
+                            <div id="roleListDiv">
+                            </div>
+                            <hr>
+                            <strong>Completion alert</strong>
+                            </p>
+                            <div id="typeOfSuccess">
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" id="SuccessCorrectAnswer" value="CorrectAnswer" name="successAlert" checked="checked">
+                                    <label class="form-check-label" for="SuccessCorrectAnswer">Correct Answer</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" id="SuccessAnswerSaved" value="answerSaved" name="successAlert">
+                                    <label class="form-check-label" for="SuccessAnswerSaved">Answer Saved</label>
+                                </div>
+                            </div>
+                            <!--end type of completionAlert-->
+                            <hr>
+                            <label for="questionBody">Question Body</label>
+                            <textarea class="form-control" id="questionBody" name="questionBody" rows="10"></textarea>
+                            <hr>
+                            <button id="parent">set color</button>
+                            <input id="color" name="color" type="text" value="#FFFFFF">
+
+                            <div id="typeOfQuestion">
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" id="essayType" value="essay" name="type">
+                                    <label class="form-check-label" for="essayType">Essay Type Question</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" id="multiplechoicetype" value="mchoice" name="type" checked="checked">
+                                    <label class="form-check-label" for="multiplechoicetype">Multiple Choice Type Question</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" id="multipleAnswerType" value="multipleAnswer" name="type">
+                                    <label class="form-check-label" for="multipleAnswerType">Multiple Answer Type Question</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" id="announcementRadio" value="announcement" name="type">
+                                    <label class="form-check-label" for="announcementRadio">Announcement Type</label>
+                                </div>
+                            </div>
+                            <!--end type of question-->
+                            <div id="multipleChoice">
+                                <div id="answers">
+
+                                </div>
+                                <!--end answers-->
+
+                            </div>
+                            <!--end multiple Choice-->
+                            <div id="announcementType">
+
+                            </div>
+                        </form>
+
+                        {{!-- END FORM++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                        --}}
+                    </div>
+                    <div class="modal-footer">
+                        <div id="deleteQuestionDiv"></div>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modalMain" id="closeRegular">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveAndClose">Save and Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+    <footer class="mastfoot mt-auto">
+        <div class="inner">
+            <div class="stargarnetReferral">
+                <p>design by
+                    <a target="blank" href="https://www.stargarnet.net/">Stargarnet LLC</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+</div>
+
+{{!--
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->--}}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.js"></script>
+<script src="color-picker.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var parent = document.querySelector('#parent');
+        var picker = new Picker(parent);
+        picker.onDone = function (color) {
+            $('#color').val(color.rgbString)
+            $('.modal-content').css('background-color', color.rgbString)
+        }
+        x = '{{{package}}}';
+        rows = JSON.parse(x);
+        catagories = '{{{packageCatagories}}}';
+        catagories = JSON.parse(catagories);
+
+        //BUILD TABLE ROWS
+        $.each(rows, function (index) {
+            let item_id = this.questions_id;
+            let item_name = this.questions_title;
+            let item_color = this.questions_color;
+            let htmlId = "#itemDivId" + item_id;
+            let thisRow = this;
+
+
+            tableHTML = `
+    <tr  id='#row${index}'>
+      <th scope="row" id='#row${index}'>${item_id}</th>
+      <td id='#row${index}'>${item_name}</td>
+    </tr>`
+
+            $('#tableBody').append(tableHTML);
+
+        })//end each
+
+        //new Item button
+
+        $('#newItemDiv').on('click', '#createNewItem', function () {
+            //get data from server
+            $.ajax({
+                url: "/editor/highestQuestion",
+                type: 'GET',
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+            }).done(function (msg) {
+                let hieghestLevelQuestion = msg.max;
+                if (hieghestLevelQuestion % 1 != 0) {
+                    hieghestLevelQuestion = Math.ceil(hieghestLevelQuestion)
+                    $('#questionOrder').val(hieghestLevelQuestion)
+
+                } else {
+                    hieghestLevelQuestion++;
+                    $('#questionOrder').val(hieghestLevelQuestion)
+                }//end else
+
+                let buildThis = {
+                    questions_id: 'notYetSet',
+                    questions_info:
+                    {
+                        questionTitle: 'Q' + hieghestLevelQuestion,
+                        questionBody: '',
+                        questionType: 'mchoice',
+
+                        answersArray: 5,
+                        questionOrder: hieghestLevelQuestion
+                    },
+                    questions_number: null,
+                    questions_catagories: ['student', 'The Oaks Private School'],
+                    questions_color: 'rgb(255,255,255)',
+                    newItem: true
+
+                }//end msg
+                buildModal(buildThis);
+            })//end done AJAX
+
+        }) //end new item button
+
+
+        //click to go to update MODAL
+        //tr and td are funky, as such it is better to work with td and use the this keyword
+        $('#tableBody').on('click', 'td, th', function () {
+            //get the correct user information
+            let userIndex = this.id.slice(4);
+
+            //get the correct id
+            let targetId = rows[userIndex].questions_id;
+            //AJAX to get the specifics
+            $.ajax({
+                url: "/editor/api/getquestion",
+                data: "targetId=" + targetId,
+                type: 'GET',
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+            }).done(function (msg) {
+                console.log(msg)
+                buildModal(msg);
+            })//end done
+                .fail(function (xhr, status, errorThrown) {
+                    alert("Sorry, there was a problem!");
+                    console.log("Error: " + errorThrown);
+                    console.log("Status: " + status);
+                    console.dir(xhr);
+                })
+
+        })//end click
+
+
+
+        //UPDATE THE MODAL
+        //the modal is where all the updates happen. It is always present but normally hidden from the user. 
+        //When a new item is built, the default data, passed in on click new user, is used, when an update is built, a real data is used from the package passed to the page on load.
+        function buildModal(msg) {
+            //prep variables
+            let modalTitle = msg.questions_info.questionTitle;
+            let modalId = msg.questions_id;
+            let level = msg.questions_info.questionOrder;
+            let modalBody = msg.questions_info.questionBody
+            let newItem = msg.newItem;
+            let questionType = msg.questions_info.questionType
+            let answerArray = JSON.parse(msg.questions_info.answersArray);
+            let msgRoles = msg.questions_roles;
+            let msgCatagories = msg.questions_catagories
+            let successAlert = msg.questions_info.successAlert
+
+            //get summernote ready
+            $('#questionBody').summernote('destroy');
+
+            if (typeof msg.newItem == "undefined") {
+                newItem = false;
+            } else {
+                newItem = msg.newItem;
+            }
+            let color = msg.questions_color;
+
+            //update color
+            $('.modal-content').css('background-color', color)
+
+            //static stuff++++
+            $('#ModalTitle').html(modalTitle);
+
+            //Catagory selector++++++++++
+            //make choice if this is a new item or not
+            if (!newItem) {
+
+                $('#catagoryListDiv').empty();
+                for (let i = 0; i < catagories.length; i++) {
+                    if ($.inArray(catagories[i].catagories_name, msgCatagories) != -1) {
+
+                        $('#catagoryListDiv').prepend('<div class="form-check" ><input class="form-check-input" type="checkbox" name="catagory" value="' + catagories[i].catagories_name + '" id=' + catagories[i].catagories_name + ' checked><label class=form-check-label" for=' + catagories[i].catagories_name + '>' + catagories[i].catagories_name + '</label></div>')
+                    }
+                    else {
+                        $('#catagoryListDiv').prepend('<div class="form-check"><input class="form-check-input" type="checkbox" name="catagory" value="' + catagories[i].catagories_name + '" id=' + catagories[i].catagories_name + '><label class=form-check-label" for=' + catagories[i].catagories_name + '>' + catagories[i].catagories_name + '</label></div>')
+                    }
+                }//end for
+
+            }//end check if new item
+            else {
+
+
+                $('#catagoryListDiv').empty();
+                for (let i = 0; i < catagories.length; i++) {
+                    if (catagories[i].catagories_default == true) {
+                        $('#catagoryListDiv').prepend('<div class="form-check"><input class="form-check-input" type="checkbox" name="catagory" value="' + catagories[i].catagories_name + '" id=' + catagories[i].catagories_name + ' checked><label class=form-check-label" for=' + catagories[i].catagories_name + '>' + catagories[i].catagories_name + '</label></div>')
+                    }
+                    else {
+                        $('#catagoryListDiv').prepend('<div class="form-check"><input class="form-check-input" type="checkbox" name="catagory" value="' + catagories[i].catagories_name + '" id=' + catagories[i].catagories_name + '><label class=form-check-label" for=' + catagories[i].catagories_name + '>' + catagories[i].catagories_name + '</label></div>')
+                    }
+                }//end for
+
+            }//end else (for check of new item or not)
+
+
+
+            //Role Selector+++++++++++++++++++++
+            let roles = [{ role: 'Debbie', default: true }, { role: 'Raja', default: true }]
+            if (!newItem) {
+
+                $('#roleListDiv').empty();
+                for (let i = 0; i < roles.length; i++) {
+                    if ($.inArray(roles[i].role, msgRoles) != -1) {
+                        $('#roleListDiv').prepend('<div class="form-check"><input class="form-check-input" type="checkbox" name="role" value="' + roles[i].role + '" id="role_' + roles[i].role + '" checked><label class=form-check-label" for="role_' + roles[i].role + '">' + roles[i].role + '</label></div>')
+                    }
+                    else {
+                        $('#roleListDiv').prepend('<div class="form-check"><input class="form-check-input" type="checkbox" name="role" value="' + roles[i].role + '" id="role_' + roles[i].role + '"><label class=form-check-label" for="role_' + roles[i].role + '">' + roles[i].role + '</label></div>')
+                    }
+                }//end for
+
+
+
+
+            }//end check if new item
+            else {
+                $('#roleListDiv').empty();
+                for (let i = 0; i < roles.length; i++) {
+                    if (roles[i].default == true) {
+                        $('#roleListDiv').prepend('<div class="form-check"><input class="form-check-input" type="checkbox" name="role" value="' + roles[i].role + '" id="role_' + roles[i].role + '" checked><label class=form-check-label" for="role_' + roles[i].role + '">' + roles[i].role + '</label></div>')
+                    }
+                    else {
+                        $('#roleListDiv').prepend('<div class="form-check"><input class="form-check-input" type="checkbox" name="role" value="' + roles[i].role + '" id="role_' + roles[i].role + '"><label class=form-check-label" for="role_' + roles[i].role + '">' + roles[i].role + '</label></div>')
+                    }
+                }//end for
+
+
+            }//end else (for check of new item or not)
+
+
+            //completionAlertDiv
+            switch (successAlert) {
+                case "CorrectAnswer":
+                    $('#SuccessCorrectAnswer').prop('checked', true)
+                    $('#SuccessAnswerSaved').prop('checked', false)
+                    break;
+                case "answerSaved":
+                    $('#SuccessCorrectAnswer').prop('checked', false)
+                    $('#SuccessAnswerSaved').prop('checked', true)
+                    break;
+                default:
+                    $('#SuccessCorrectAnswer').prop('checked', true)
+                    $('#SuccessAnswerSaved').prop('checked', false)
+            }
+
+            //end completionAlerts
+
+            //Color Picker+++
+            //code for color picker is at the top of javascript. It does not change each time we update the modal. 
+            $('#color').val(color)
+
+
+            //Dynamic stuff++++
+
+            $('#questionOrder').val(level);
+            $('#questionName').val(modalTitle);
+            $('#questionBody').val(modalBody)
+
+
+            //summernote (code from SUMMERNOTE GITHUBE: https://github.com/summernote/summernote/issues/2644)
+            //License MIT: https://github.com/summernote/summernote/blob/develop/LICENSE
+            $(document).on("show.bs.modal", '.modal', function (event) {
+                console.log("Global show.bs.modal fire");
+                var zIndex = 100000 + (10 * $(".modal:visible").length);
+                $(this).css("z-index", zIndex);
+                setTimeout(function () {
+                    $(".modal-backdrop").not(".modal-stack").first().css("z-index", zIndex - 1).addClass("modal-stack");
+                }, 0);
+            }).on("hidden.bs.modal", '.modal', function (event) {
+                console.log("Global hidden.bs.modal fire");
+                $(".modal:visible").length && $("body").addClass("modal-open");
+            });
+            $(document).on('inserted.bs.tooltip', function (event) {
+                console.log("Global show.bs.tooltip fire");
+                var zIndex = 100000 + (10 * $(".modal:visible").length);
+                var tooltipId = $(event.target).attr("aria-describedby");
+                $("#" + tooltipId).css("z-index", zIndex);
+            });
+            $(document).on('inserted.bs.popover', function (event) {
+                console.log("Global inserted.bs.popover fire");
+                var zIndex = 100000 + (10 * $(".modal:visible").length);
+                var popoverId = $(event.target).attr("aria-describedby");
+                $("#" + popoverId).css("z-index", zIndex);
+            });
+            //back to my code
+            $('#questionBody').summernote({ height: 150, dialogsInBody: true });
+
+
+
+
+
+
+            //setup question selector radio buttons+++++++++++++++++++++++++++++++
+            switch (questionType) {
+                case "mchoice":
+                    $('#multipleChoice').show();
+                    $('#essayType').prop('checked', false)
+                    $('#announcementRadio').prop('checked', false)
+                    $('#multiplechoicetype').prop('checked', true)
+                    $('#multipleAnswerType').prop('checked', false)
+                    break;
+                case "multipleAnswer":
+                    $('#multipleChoice').show();
+                    $('#essayType').prop('checked', false)
+                    $('#announcementRadio').prop('checked', false)
+                    $('#multiplechoicetype').prop('checked', false)
+                    $('#multipleAnswerType').prop('checked', true)
+                    break;
+                case "essay":
+                    $('#multipleChoice').hide();
+                    $('#essayType').prop('checked', true)
+                    $('#announcementRadio').prop('checked', false)
+                    $('#multiplechoicetype').prop('checked', false)
+                    $('#multipleAnswerType').prop('checked', false)
+                    break;
+                case "announcement":
+                    $('#multipleChoice').hide();
+                    $('#essayType').prop('checked', false)
+                    $('#announcementRadio').prop('checked', true)
+                    $('#multiplechoicetype').prop('checked', false)
+                    $('#multipleAnswerType').prop('checked', false)
+                    break;
+                default:
+                    $('#multipleChoice').show();
+                    $('#essayType').prop('checked', false)
+                    $('#announcementRadio').prop('checked', false)
+                    $('#multiplechoicetype').prop('checked', true)
+                    $('#multipleAnswerType').prop('checked', false)
+            }
+
+            //MAKE RADIO SELECT QUESTION TYPE DYNAMIC++++++++++++++++++++++++++++
+            //startup check
+            if ($('#multipleChoice').attr('checked')) {
+                $('#multipleChoice').show(100);
+            }
+
+            if ($('#multipleAnswer').attr('checked')) {
+                $('#multipleChoice').show(100);
+            }
+
+
+            $('#typeOfQuestion').off();
+            $('#typeOfQuestion').on('click', '#essayType', function () {
+                $('#multipleChoice').hide(100);
+
+            })//end on click essayType
+            $('#typeOfQuestion').on('click', '#announcementRadio', function () {
+                $('#multipleChoice').hide(100);
+
+            })//end on click announcementType
+
+            $('#typeOfQuestion').on('click', '#multiplechoicetype', function () {
+                $('#multipleChoice').show(100);
+            })//end on click multiplechoice
+
+            $('#typeOfQuestion').on('click', '#multipleAnswerType', function () {
+                $('#multipleChoice').show(100);
+            })//end on click multiple answer
+
+
+
+            //build multiple choice+++++++++++++++++++++++++++++++++++++++++
+            //regardless of what type of question is selected, we need to setup the multiple choice stuff
+            buildMultipleChoice(answerArray)
+            function buildMultipleChoice(numberOrAnswersArray) //msg can be what is returned (actual AJAX message) or could be a number of blank questions you want built. 
+            {
+                $('#answers').empty();
+                //id to delete answers
+                let answerId = 0;
+                function html(i) {
+                    return '<div class="form-row answerRow" id="' + i + '">\
+            <div class="form-group col-md-2">\
+                <label for="valueAnswer'+ i + '">value for Answer ' + i + '</label>\
+                <input type="text" class="form-control valueAnswer" id="valueAnswer'+ i + '" value="' + i + '" name="valueOfAnswer' + i + '">\
+            </div>\
+                <div class="form-group col-md-6">\
+                <label for="Answer'+ i + '"><br>Answer ' + i + '</label>\
+                <textarea class="form-control actualAnswer" id="Answer'+ i + '" name="answer' + i + '"></textarea>\
+            </div>\
+                    <div class="form-check form-check-inline">\
+                    <input type="checkbox" class="form-check-input correctAnswer" id="correct'+ i + '" value="' + i + '" name="correct" data-toggle="tooltip" data-placement="top" title="Mark as correct answer">\
+                    <label class="form-check-label" for="correct'+ i + '"></label>\
+                    </div>\
+        </div>'
+                }
+
+                if (!isNaN(numberOrAnswersArray)) { //this part is how we determine if msg is an actual AJAX transimssion or a default number that indicates the number of blank questions to build. 
+                    var numberOfAnswers = numberOrAnswersArray;
+                    console.log(numberOfAnswers)
+                    for (let i = numberOrAnswersArray; i > 0; i--) {
+                        answerId++;
+                        $('#answers').prepend(html(i))
+                    }//end for loop  
+
+                }//end check if number
+                else {
+                    answersArray = numberOrAnswersArray
+                    console.log(answersArray.length)
+                    for (let i = answersArray.length; i > 0; i--) {
+                        answerId++;
+                        console.log(answersArray[i - 1][0])
+                        console.log(answersArray[i - 1][1])
+                        console.log(answersArray[i - 1][2])
+                        updateHTML = '<div class="form-row answerRow" id="' + i + '">\
+            <div class="form-group col-md-2">\
+                <label for="valueAnswer'+ i + '">value for Answer ' + i + '</label>\
+                <input type="text" class="form-control valueAnswer" id="valueAnswer'+ i + '" value="' + answersArray[i - 1][0] + '" name="valueOfAnswer' + i + '">\
+            </div>\
+                <div class="form-group col-md-6">\
+                <label for="Answer'+ i + '"><br>Answer ' + i + '</label>\
+                <textarea class="form-control actualAnswer" id="Answer'+ i + '" name="answer' + i + '">' + answersArray[i - 1][1] + '</textarea>\
+            </div>\
+                    <div class="form-check form-check-inline">\
+                    <input type="checkbox" class="form-check-input correctAnswer" id="correct'+ i + '"  name="correct" data-toggle="tooltip" data-placement="top" title="Mark as correct answer">\
+                    <label class="form-check-label" for="correct'+ i + '"></label>\
+                    </div>\
+        </div>'
+                        $('#answers').prepend(updateHTML)
+                        $('#correct' + i).attr('checked', answersArray[i - 1][2])
+                    }//end forloop
+                }//end else
+                $('#multipleChoice').off();
+                $('#deleteAnswer').remove();
+                $('#addAnswer').remove();
+                let deleteAnswerButton = "<button type='button' class='btn btn-warning' id='deleteAnswer'>delete answer</button>";
+                $('#multipleChoice').append(deleteAnswerButton)
+
+                $('#multipleChoice').on('click', '#deleteAnswer', function () {
+
+                    $('#' + answerId).remove();
+                    if (answerId > 0) {
+                        answerId--
+                    };
+
+
+                })//end on delete answer
+                let addAnswerButton = "<button type='button' class='btn btn-info' id='addAnswer'>add answer</button>";
+                $('#multipleChoice').append(addAnswerButton)
+                $('#multipleChoice').on('click', '#addAnswer', function () {
+
+                    answerId++
+                    $('#answers').append(html(answerId));
+
+                })//end on delete answer
+
+
+            }//end buildMulitpleChoice
+
+
+
+
+
+
+            //DELETE BUTTON+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            if (!$('#deleteQuestion').length && newItem != true) {
+                let htmlStuff = "<button type='button' class='btn btn-danger' id='deleteQuestion'>Delete Question</button>";
+                $('#deleteQuestionDiv').append(htmlStuff);
+                $('#modalMain').on('click', '#deleteQuestion', function () {
+                    if (window.confirm('Do you really want to delete this question?')) {
+
+                        let package = { questions_id: modalId }
+                        $.ajax({
+                            url: "/editor/delete",
+                            data: package,
+                            type: 'POST',
+                            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                        }).done(function (msg) {
+                            console.log(msg)
+                            if (msg != 'DELETE SUCCESSFUL') {
+                                alert(msg)
+                            }
+                            location.reload(true);
+                        })//end done
+                            .fail(function (xhr, status, errorThrown) {
+                                alert("Sorry, there was a problem!");
+                                console.log("Error: " + errorThrown);
+                                console.log("Status: " + status);
+                                console.dir(xhr);
+                            })
+                    }//end if window.confirm
+                })//end deleteQuestionOnClick
+            }//end if statement checking if deleteQuestion botton alreadye exists. 
+
+
+            //UPDATE AND CLOSE BUTTON++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            //define how we will read data
+            function readMultipleChoice() {
+                let answersArray = [];
+                $('.answerRow').each(function (rowNumber, element) {
+
+                    let valueAnswer = $(element).find('.valueAnswer').val();
+                    let actualAnswer = $(element).find('.actualAnswer').val();
+                    let correctAnswer = $(element).find('.correctAnswer').is(":checked");
+                    let specificAnswer = [valueAnswer, actualAnswer, correctAnswer]
+                    answersArray.push(specificAnswer)
+                })//end .each
+                return answersArray;
+            }//end readMultipleChoice
+
+            //make the button
+            //update part
+            if (!newItem) {
+                $('#saveAndClose').attr('id', 'updateAndClose');
+                $('#updateAndClose').html('Update and Close');
+                $('#modalMain').off('click', '#updateAndClose');
+                $('#modalMain').on('click', '#updateAndClose', function () {
+                    let package = $('#mainForm').serializeArray();
+                    package.push({ name: 'questions_id', value: modalId });
+                    package.push({ name: 'answersArray', value: JSON.stringify(readMultipleChoice()) });
+                    $.ajax({
+                        url: "/editor/update",
+                        data: package,
+                        type: 'POST',
+                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    }).done(function (msg) {
+                        console.log(msg)
+                        if (msg == 'please fill in at least one adult and one child name') {
+                            alert(msg)
+                        }
+                        location.reload(true);
+                    })//end done
+                        .fail(function (xhr, status, errorThrown) {
+                            alert("Sorry, there was a problem!");
+                            console.log("Error: " + errorThrown);
+                            console.log("Status: " + status);
+                            console.dir(xhr);
+                        })
+                })//END updateAndClose onClick
+            }//end check if newItem
+            else {
+                $('#updateAndClose').attr('id', 'saveAndClose');
+                $('#saveAndClose').html('Save and Close');
+                $('#deleteQuestion').remove();
+                $('#modalMain').modal('toggle');
+
+
+                $('#modalMain').off('click', '#saveAndClose');
+                $('#modalMain').on('click', '#saveAndClose', function () {
+                    let package = $('#mainForm').serializeArray();
+                    answersArray = readMultipleChoice();
+
+                    package.push({ name: 'answersArray', value: JSON.stringify(readMultipleChoice()) })
+                    $.ajax({
+                        url: "/editor",
+                        data: package,
+                        type: 'POST',
+                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    }).done(function (msg) {
+                        console.log(msg)
+                        location.reload(true);
+                    })//end done
+                        .fail(function (xhr, status, errorThrown) {
+                            alert("Sorry, there was a problem!");
+                            console.log("Error: " + errorThrown);
+                            console.log("Status: " + status);
+                            console.dir(xhr);
+                        })
+
+                })//END SAVEAND CLOSE
+            }//end else {not a new item}
+            $('#modalMain').modal('toggle');
+        }//end buildModal
+
+        //close buttons
+        $('#modalMain').on('click', '#xclose', function () {
+            $('#modalMain').modal('toggle');
+        })
+        $('#modalMain').on('click', '#closeRegular', function () {
+            $('#modalMain').modal('toggle');
+        })
+
+    })//end on load
+</script>
